@@ -1,3 +1,3 @@
-NameAddress(name=Mike, houseNumber= 111, city= Toronto, province= ON, postalCode= M5F3D2)
-NameAddress(name=Sam, houseNumber= 222, city= Ajax, province= ON, postalCode= T8H7J9)
-NameAddress(name=Mark, houseNumber= 33, city= Markham, province= ON, postalCode= L6H4Y9)
+OutboundNameAddress(name=Mike, address= 111,  Toronto,  ON,  M5F3D2)
+OutboundNameAddress(name=Sam, address= 222,  Ajax,  ON,  T8H7J9)
+OutboundNameAddress(name=Mark, address= 33,  Markham,  ON,  L6H4Y9)

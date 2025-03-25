@@ -43,7 +43,7 @@ public class LegacyFileRouteTest {
             if(context.isStarted()){
             context.stop();
             }
-            String expectedBody = "1234";
+            String expectedBody = "OutboundNameAddress(name=Mike, address= 111,  Toronto,  ON,  M5F3D2)";
             mockEndpoint.expectedBodiesReceivedInAnyOrder(expectedBody);
             mockEndpoint.expectedMinimumMessageCount(1);
 
@@ -53,7 +53,8 @@ public class LegacyFileRouteTest {
             });
 
             context.start();
-            producerTemplate.sendBody("direct:mockStart",expectedBody);
+            producerTemplate.sendBody("direct:mockStart","name, house_number, city, province, postal_code\n" +
+                    "Mike, 111, Toronto, ON, M5F3D2");
             mockEndpoint.assertIsSatisfied();
         }
 }

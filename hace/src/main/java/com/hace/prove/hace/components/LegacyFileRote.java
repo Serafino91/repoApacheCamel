@@ -1,7 +1,9 @@
 package com.hace.prove.hace.components;
 
 import com.hace.prove.hace.beans.NameAddress;
+import com.hace.prove.hace.processor.InboundMessageProcessor;
 import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.dataformat.beanio.BeanIODataFormat;
@@ -22,11 +24,9 @@ public class LegacyFileRote extends RouteBuilder {
                 .routeId("legacyFileMoveRouteId")
                 .split(body().tokenize("\n",1,true))
                 .unmarshal(inboundDataFormat)
-                    .process( exchange -> { // NOTA2
-                        NameAddress filedata = exchange.getIn().getBody(NameAddress.class);
-                        logger.info("this is the read file data \n"+ filedata.toString());
-                        exchange.getIn().setBody(filedata.toString());
-                    })
+                    .process(new InboundMessageProcessor()) // ho esternalizzato il process buona prassi
+                    .log(LoggingLevel.INFO, "Trasformed Body: ${body}")
+                    .convertBodyTo(String.class)
                     .to("file:src/main/resources/data/output?fileName=outputFile.csv&fileExist=append&appendChars=\\n")
                 .end(); //NOTA3
 
@@ -38,6 +38,13 @@ public class LegacyFileRote extends RouteBuilder {
            da piu' in pasto alla rotta. Altra cosa se voglio leggere solo quando il file e' cambiato devo aggiungere a
            noop=true con &readLock=changed
 
+
+
+exchange -> { // NOTA2
+                        NameAddress filedata = exchange.getIn().getBody(NameAddress.class);
+                        logger.info("this is the read file data \n"+ filedata.toString());
+//                        exchange.getIn().setBody(filedata.toString());
+                    }
 
    NOTA2: la lambda function "exchange" sto a fare praticamente questo:
             ...
