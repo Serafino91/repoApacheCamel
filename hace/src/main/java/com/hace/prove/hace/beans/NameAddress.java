@@ -3,10 +3,12 @@ package com.hace.prove.hace.beans;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Entity
 @Table(name = "NAME_ADDRESS")
-public class NameAddress {
+public class NameAddress implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

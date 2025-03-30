@@ -50,6 +50,24 @@ public class NewRestRoute extends RouteBuilder {
 //                    .log(LoggingLevel.INFO, "Transformed Body: ${body}")
 //                    .convertBodyTo(String.class)
 //                    .to("file:src/main/resources/data/output?fileName=outputFile.csv&fileExist=append&appendChars=\\n");
+                    .to("direct:toDB")//NOTA1
+                    .setBody(simple("${body}")) // imposta la risposta prima di "spezzare" il flow
+                    .to("direct:toActiveMQ");
+
+            from("direct:toDB")
+                    .routeId("toDBId")
                     .to("jpa:"+NameAddress.class.getName());
+
+            from("direct:toActiveMQ")
+                    .routeId("toActiveMQId")
+                    .to("activemq:queue:nameAddressQueque?exchangePattern=InOnly");
     }
 }
+/*
+    NOTA1: Si spezzeta il 2 to db e MQ cosi da poter dare al Mq anche id_name
+    che altrimenti attivierebbe la rotta di toActivateMQ con id_name =null
+    invece spezzettando la rota come sopra si aspetta che dopo aver salvato a db
+    ritorna il json con i valori salvati (tra cui anche id_name che e' auto incrementale)
+    e poi si da in pasto alla coda mq.
+    DA NOTARE l'utilizzo di setBody cosi da salvare lo stato del body da ritornare.
+ */
