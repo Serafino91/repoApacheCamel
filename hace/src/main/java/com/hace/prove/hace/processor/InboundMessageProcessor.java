@@ -15,6 +15,7 @@ Logger logger = LoggerFactory.getLogger(getClass());
     public void process(Exchange exchange) throws Exception {
             NameAddress nameAddress = exchange.getIn().getBody(NameAddress.class);
             exchange.getIn().setBody(new OutboundNameAddress(nameAddress.getName(), returnOutboundAddress(nameAddress)));
+            exchange.getIn().setHeader("consumedId", nameAddress.getId_name());
     }
     private String returnOutboundAddress(NameAddress nameAddress){
         StringBuilder concatenatedAddres = new StringBuilder(200);
